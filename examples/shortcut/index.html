@@ -1,0 +1,89 @@
+<!--
+  Copyright (c) 2017-present, Facebook, Inc.
+  All rights reserved.
+
+  This source code is licensed under the license found in the
+  LICENSE file in the root directory of this source tree.
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="full-screen" content="yes"/>
+  <meta name="screen-orientation" content="portrait"/>
+  <meta name="viewport" content="user-scalable=no"/>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+</head>
+
+<body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://connect.facebook.net/en_US/fbinstant.6.2.js"></script>
+  <script src="js/display.js"></script>
+  <script type="text/javascript">
+    let display = window.Display;
+
+    window.onload = function() {
+      $('#create-shortcut-button').hide();
+
+      FBInstant.initializeAsync()
+      .then(FBInstant.startGameAsync)
+      .then(onStart);
+    };
+
+    function onStart() {
+      let supportedAPIs = FBInstant.getSupportedAPIs();
+      let shortcutSupported =
+        supportedAPIs.includes('canCreateShortcutAsync') &&
+        supportedAPIs.includes('createShortcutAsync');
+      if (shortcutSupported) {
+        $('#create-shortcut-button').show();
+      } else {
+        display.error('Only Android devices support shortcuts.');
+      }
+    }
+
+    function tryCreateShortcut() {
+      FBInstant.canCreateShortcutAsync()
+      .then(function(success) {
+        if (success) {
+          FBInstant.createShortcutAsync()
+          .then(function() {
+            display.success('Shortcut prompt initiated successfully!');
+          })
+          .catch(function(error) {
+            display.error('Could not create shortcut: ' + error.message);
+          });
+        } else {
+          display.error('The shortcut prompt can only appear once per game session.');
+        }
+      });
+    }
+  </script>
+
+  <header>
+    <h1>Instant Games Demos</h1>
+    <h2>Home Shortcuts</h2>
+  </header>
+
+  <section>
+    <p>
+      On an Android device, this <b>Create Shortcut</b> button will
+      prompt the user to add a shortcut to this app to their home screen.
+    </p>
+
+    <input type="button"
+      id="create-shortcut-button"
+      onclick="tryCreateShortcut();"
+      value="Create Shortcut"/>
+    </div>
+  </section>
+
+  <section>
+    <p id="display-message" class="output"></p>
+    <p id="display-success" class="success"></p>
+    <p id="display-error" class="error"></p>
+  </section>
+</body>
+</html>

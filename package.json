@@ -1,0 +1,32 @@
+{
+  "name": "fbinstant-examples",
+  "version": "1.0.0",
+  "description": "Contains multiple samples for Instant Games",
+  "main": "index.html",
+  "repository": "https://github.com/facebook/fbinstant-examples.git",
+  "maintainers": ["Edgar Neto <edgarneto@fb.com>"],
+  "license": "Platform License",
+  "private": true,
+  "dependencies": {
+    "gulp": "3.9.1",
+    "gulp-html-replace": "^1.6.2",
+    "gulp-rename": "^1.2.2",
+    "gulp-rimraf": "^0.2.2",
+    "gulp-webserver": "^0.9.1",
+    "gulp-zip": "^4.1.0",
+    "open": "^0.0.5",
+    "request": "^2.83.0"
+  },
+  "devDependencies": {
+    "gulp-cli": "^2.0.1",
+    "semistandard": "^12.0.1"
+  },
+  "scripts": {
+    "mock": "gulp run-mock",
+    "run-mock": "gulp run-mock",
+    "dist": "gulp run-dist",
+    "run-dist": "gulp run-dist",
+    "upload": "gulp upload",
+    "lint": "jslint **/*.js"
+  }
+}

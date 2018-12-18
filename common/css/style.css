@@ -1,0 +1,94 @@
+/**
+ * Copyright (c) 2017-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+ * {
+   box-sizing: border-box;
+ }
+
+body {
+  background-color: white;
+  font-family: 'Helvetica';
+  font-size: 3vmin;
+  padding: 0;
+  margin: 0;
+}
+
+header {
+  background-color: #4968ad;
+  color: white;
+  padding: 1em 2em;
+}
+
+section {
+  margin: 2em;
+}
+
+input {
+  padding: 0.8em;
+  margin: 0.5em 0;
+  width: 100%;
+}
+
+input[type=button] {
+  background-color: #4968ad;
+  color: white;
+  font-size: 1em;
+  font-weight: bold;
+  -webkit-appearance: none;
+}
+
+input[type=text] {
+  font-size: 1em;
+}
+
+input[type=number] {
+  font-size: 1em;
+}
+
+h1 {
+  font-size: 2em;
+}
+
+h2 {
+  font-size: 1.5em;
+}
+
+table {
+  background-color: #f5f6f7;
+  border-collapse: separate;
+  border-spacing: 1em;
+  font-size: 1em;
+  margin: 0.5em 0;
+  table-layout: auto;
+  width: 100%
+}
+
+th {
+  text-align: left;
+}
+
+td {
+  color: #4968ad;
+}
+
+.profile_picture {
+  width: 4em;
+  height: 4em;
+}
+
+.output {
+  color: #4968ad;
+}
+
+.success {
+  color: green;
+}
+
+.error {
+  color: red;
+}

@@ -1,0 +1,195 @@
+<!--
+  Copyright (c) 2017-present, Facebook, Inc.
+  All rights reserved.
+
+  This source code is licensed under the license found in the
+  LICENSE file in the root directory of this source tree.
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="full-screen" content="yes"/>
+  <meta name="screen-orientation" content="portrait"/>
+  <meta name="viewport" content="user-scalable=no"/>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+</head>
+
+<body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://connect.facebook.net/en_US/fbinstant.6.2.js"></script>
+  <script src="js/display.js"></script>
+  <script type="text/javascript">
+    const display = window.Display;
+
+    // Go to your app dashboard and then Instant Games > Leaderboards
+    // Create a leaderboard with a name that matches this one
+    const LEADERBOARD_NAME = "your_leaderboard_name_here";
+
+    let leaderboard = null;
+    let contextID = null;
+
+    window.onload = function() {
+      $('#info-section, #leaderboard-section').hide();
+
+      FBInstant.initializeAsync()
+      .then(FBInstant.startGameAsync)
+      .then(onStart);
+    };
+
+    function onStart() {
+      $('#info-section, #leaderboard-section').show();
+      contextID = FBInstant.context.getID();
+      fetchLeaderboard();
+    }
+
+    function getLeaderboardName() {
+      // If the leaderboard is contextual, i.e. it is set as contextual in the
+      // leaderboard configuration and this session occurs in a message thread,
+      // this specific context should append ".<Context ID>" to
+      // the name of the leaderboard
+      if (contextID != null) {
+        return LEADERBOARD_NAME + '.' + contextID;
+      }
+      return LEADERBOARD_NAME;
+    }
+
+    function fetchLeaderboard() {
+      // If the leaderboard name is not found in your
+      // app's configuration, the promise will reject
+      FBInstant.getLeaderboardAsync(getLeaderboardName())
+        .then(function(result) {
+          display.clear();
+          leaderboard = result;
+          updateLeaderboardInformation();
+          return leaderboard.getEntriesAsync();
+        })
+        .then(updateLeaderboardEntries)
+        .catch(function(error) {
+          display.error('Leaderboard is not found in app configuration');
+        });
+    }
+
+    // Print out basic leaderboard information to the webpage
+    function updateLeaderboardInformation() {
+      let name = leaderboard.getName();
+      let contextID = leaderboard.getContextID();
+      leaderboard.getEntryCountAsync()
+        .then(function(count) {
+          $('#lb-name').html(name);
+          $('#lb-context-id').html(contextID);
+          $('#lb-entry-count').html(count);
+        });
+    }
+
+    // Print out entries of the leaderboard to the webpage
+    function updateLeaderboardEntries(entries) {
+      let list = $('#leaderboard');
+      list.empty();
+      entries.forEach(function(entry) {
+        list.append($(`
+          <tr>
+            <td>#${entry.getRank()}</td>
+            <td>
+              <img
+                width="50"
+                height="50"
+                class="profile_picture"
+                src="${entry.getPlayer().getPhoto()}"
+              />
+            </td>
+            <td>${entry.getFormattedScore()}</td>
+          </tr>
+        `));
+      });
+    }
+
+    // Prompts the user to pick a context
+    function chooseContext() {
+      FBInstant.context.chooseAsync().then(function() {
+        contextID = FBInstant.context.getID();
+        fetchLeaderboard();
+      });
+    }
+
+    // Submits the score entered in the text input
+    function submitScore() {
+      var score = parseInt($('#score').val(), 10);
+
+      leaderboard.setScoreAsync(score)
+        .then(function(entry) {
+          display.clear();
+          return leaderboard.getEntriesAsync();
+        })
+        .then(updateLeaderboardEntries)
+        .catch(function(error) {
+          display.error('Error sending score: ' + error.message);
+        });
+    }
+
+  </script>
+
+  <header>
+    <h1>Instant Games Demos</h1>
+    <h2>Leaderboards</h2>
+  </header>
+
+  <section id="info-section">
+    <h3>Leaderboard Info</h3>
+
+    <p>
+      Add a leaderboard to your game using the
+      <a href="https://developers.facebook.com/apps">app dashboard</a>
+      and visiting
+      <b>Your Game > Instant Games > Leaderboards</b>. Make sure the name you
+      use for your leaderboard matches <b>LEADERBOARD_NAME</b> in this file.
+    </p>
+
+    <table>
+      <tr>
+        <th>Name</th>
+        <td id="lb-name">...</td>
+      </tr>
+      <tr>
+        <th>Context ID</th>
+        <td id="lb-context-id">...</td>
+      </tr>
+      <tr>
+        <th>Entries</th>
+        <td id="lb-entry-count">...</td>
+      </tr>
+    </table>
+
+    <input type="button"
+      onclick="chooseContext();"
+      value="Choose Context"/>
+  </section>
+
+  <section id="leaderboard-section">
+    <h3>Leaderboard</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Player Icon</th>
+          <th>Score</th>
+        </tr>
+      </thead>
+      <tbody id="leaderboard"></tbody>
+    </table>
+
+    <input type="number" id="score" placeholder="Enter a score"></input>
+    <input type="button"
+      onclick="submitScore();"
+      value="Submit Score"/>
+  </section>
+
+  <section>
+    <p id="display-message" class="output"></p>
+    <p id="display-success" class="success"></p>
+    <p id="display-error" class="error"></p>
+  </section>
+</body>
+</html>

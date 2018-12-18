@@ -1,0 +1,155 @@
+<!--
+  Copyright (c) 2017-present, Facebook, Inc.
+  All rights reserved.
+
+  This source code is licensed under the license found in the
+  LICENSE file in the root directory of this source tree.
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="full-screen" content="yes"/>
+  <meta name="screen-orientation" content="portrait"/>
+  <meta name="viewport" content="user-scalable=no"/>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+</head>
+
+<body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://connect.facebook.net/en_US/fbinstant.6.2.js"></script>
+  <script src="js/display.js"></script>
+  <script type="text/javascript">
+    const display = window.Display;
+
+    let preloadedRewardedVideo = null;
+    let preloadedInterstitial = null;
+
+    window.onload = function() {
+      $('#btn-interstitial, #btn-rewarded').hide();
+
+      FBInstant.initializeAsync()
+      .then(FBInstant.startGameAsync)
+      .then(onStart);
+    };
+
+    function onStart() {
+      let supportedAPIs = FBInstant.getSupportedAPIs();
+      let canShowAds =
+        supportedAPIs.includes('getInterstitialAdAsync') &&
+        supportedAPIs.includes('getRewardedVideoAsync');
+      if (!canShowAds) {
+        display.error('Ads not supported in this session');
+      }
+    }
+
+    function preloadInterstitial() {
+      display.message('Preloading Interstitial');
+      $('#btn-interstitial').hide();
+      let id = $('#interstitial-placement').value;
+      FBInstant.getInterstitialAdAsync(id)
+      .then(function(interstitial) {
+        // Load the Ad asynchronously
+        preloadedInterstitial = interstitial;
+        return preloadedInterstitial.loadAsync();
+      })
+      .then(function() {
+        display.success('Interstitial ready');
+        $('#btn-interstitial').show();
+      })
+      .catch(function(error) {
+        display.error('Interstitial failed to preload: ' + error.message);
+      });
+    }
+
+    function preloadRewarded() {
+      display.message('Preloading Rewarded Video');
+      $('#btn-rewarded').hide();
+      let id = $('#rewarded-placement').value;
+      FBInstant.getRewardedVideoAsync(id)
+      .then(function(rewarded) {
+        // Load the Ad asynchronously
+        preloadedRewardedVideo = rewarded;
+        return preloadedRewardedVideo.loadAsync();
+      })
+      .then(function() {
+        display.success('Rewarded Video ready');
+        $('#btn-rewarded').show();
+      })
+      .catch(function(error) {
+        display.error('Rewarded Video failed to preload: ' + error.message);
+      });
+    }
+
+    function showInterstitial() {
+      preloadedInterstitial.showAsync()
+      .then(function() {
+        // User has watched the ad.
+        // Perform post-ad success operation
+        //..
+        display.success('Interstitial watched!');
+      })
+      .catch(function(error) {
+        display.error(error.message);
+      });
+    }
+
+    function showRewarded() {
+      preloadedRewardedVideo.showAsync()
+      .then(function() {
+        // User has watched the ad.
+        // Perform post-ad success operation
+        //..
+        display.success('Rewarded Video watched!');
+      })
+      .catch(function(error) {
+        display.error(error.message);
+      });
+    }
+
+  </script>
+
+  <header>
+    <h1>Instant Games Demos</h1>
+    <h2>Ads Monetization</h2>
+  </header>
+
+  <section>
+    <h3>Interstitial Ads</h3>
+    <input type="text"
+      id="interstitial-placement"
+      placeholder="Interstitial Placement ID"/>
+    <input type="button"
+      id="btn-interstitial-preload"
+      onclick="preloadInterstitial();"
+      value="Preload"/>
+    <input type="button"
+      id="btn-interstitial"
+      onclick="showInterstitial();"
+      value="Show"/>
+  </section>
+
+  <section>
+    <h3>Rewarded Videos</h3>
+    <input type="text"
+      id="rewarded-placement"
+      placeholder="Rewarded Placement ID"/>
+    <input type="button"
+      id="btn-rewarded-preload"
+      onclick="preloadRewarded();"
+      value="Preload"/>
+    <input type="button"
+      id="btn-rewarded"
+      onclick="showRewarded();"
+      value="Show"/>
+  </section>
+
+  <section>
+    <p id="display-message" class="output"></p>
+    <p id="display-success" class="success"></p>
+    <p id="display-error" class="error"></p>
+  </section>
+</body>
+</html>

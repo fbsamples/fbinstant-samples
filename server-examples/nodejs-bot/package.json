@@ -1,0 +1,14 @@
+{
+  "name": "nodejs-bot",
+  "version": "1.0.0",
+  "description": "Sample Node JS Instant Games Bot",
+  "main": "index.js",
+  "license":"Platform License",
+  "dependencies": {
+    "express": "^4.16.3",
+    "cors": "2.8.4",
+    "dotenv": "6.0.0",
+    "body-parser": "^1.17.2",
+    "request": "^2.81.0"
+  }
+}

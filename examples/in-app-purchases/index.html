@@ -1,0 +1,116 @@
+<!--
+  Copyright (c) 2017-present, Facebook, Inc.
+  All rights reserved.
+
+  This source code is licensed under the license found in the
+  LICENSE file in the root directory of this source tree.
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="full-screen" content="yes"/>
+  <meta name="screen-orientation" content="portrait"/>
+  <meta name="viewport" content="user-scalable=no"/>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+</head>
+
+<body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://connect.facebook.net/en_US/fbinstant.6.2.js"></script>
+  <script src="js/display.js"></script>
+  <script type="text/javascript">
+    const display = window.Display;
+
+    window.onload = function() {
+      $('#catalog-section').hide();
+      FBInstant.initializeAsync()
+      .then(FBInstant.startGameAsync)
+      .then(onStart);
+    };
+
+    function onStart() {
+      // Check if this session supports Game Switching
+      var supportedAPIs = FBInstant.getSupportedAPIs();
+      var canMakePurchases = supportedAPIs.includes('payments.getCatalogAsync');
+      if (canMakePurchases) {
+        $('#catalog-section').show();
+      } else {
+        display.error('This session does not support purchases');
+      }
+    }
+
+    function loadProducts() {
+      FBInstant.payments.getCatalogAsync()
+      .then(function (catalog) {
+        productList = $('#product-list');
+
+        display.success(`Catalog loaded ${catalog.length} product(s)!`);
+
+        catalog.forEach(function(product) {
+          productList.append(`
+            <tr>
+              <td>${product.title}</td>
+              <td>${product.productID}</td>
+              <td>${product.price}</td>
+              <td>${product.priceCurrencyCode}</td>
+              <td>
+                <input
+                  type="button"
+                  value="Buy!"
+                  onClick="buyProduct(${product.productID});"
+                />
+              </td>
+            </tr>
+          `);
+        })
+      })
+      .catch(function(error) {
+        display.error('Error loading catalog: ' + error.message);
+      });
+    }
+
+    function buyProduct(productID) {
+      FBInstant.payments.purchaseAsync({
+        productID: productID.toString(),
+        developerPayload: 'foobar',
+      }).then(function (purchase) {
+        display.success('Successfully purchased product ' + purchase.productID);
+      }).catch(function(error) {
+        display.error(error.message);
+      });
+    }
+  </script>
+
+  <header>
+    <h1>Instant Games Demos</h1>
+    <h2>In-App Purchases</h2>
+  </header>
+
+  <section id="catalog-section">
+    <h3>Product List</h3>
+    <table>
+      <thead>
+        <th>Title</th>
+        <th>ID</th>
+        <th>Price</th>
+        <th>Currency</th>
+        <th></th>
+      </thead>
+      <tbody id="product-list"></tbody>
+    </table>
+
+    <input type="button"
+      onclick="loadProducts();"
+      value="Load Products"/>
+  </section>
+
+  <section>
+    <p id="display-message" class="output"></p>
+    <p id="display-success" class="success"></p>
+    <p id="display-error" class="error"></p>
+  </section>
+</body>
+</html>

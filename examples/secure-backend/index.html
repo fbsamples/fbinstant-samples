@@ -1,0 +1,121 @@
+<!--
+  Copyright (c) 2017-present, Facebook, Inc.
+  All rights reserved.
+
+  This source code is licensed under the license found in the
+  LICENSE file in the root directory of this source tree.
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="full-screen" content="yes"/>
+  <meta name="screen-orientation" content="portrait"/>
+  <meta name="viewport" content="user-scalable=no"/>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+</head>
+
+<body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://connect.facebook.net/en_US/fbinstant.6.2.js"></script>
+  <script src="js/data.js" ></script>
+  <script src="js/display.js" ></script>
+  <script type="text/javascript">
+
+    // You can clone a fully functional backend for this project at https://glitch.com/edit/#!/panoramic-tendency
+    // Alternatively, you can find the working server-side code at the folder server-examples/nodejs-backend
+    const BACKEND_URL = 'https://panoramic-tendency.glitch.me/';
+    const DATA_TO_STORE = {'meaning' : 42};
+    const backendClient = window.backendClient;
+    const display = window.Display;
+
+    window.onload = function() {
+      FBInstant.initializeAsync()
+      .then(FBInstant.startGameAsync)
+      .then(onStart);
+    };
+
+    function onStart() {
+      var contextId = getOrCreateContextId();
+
+      // Signing context ID
+      FBInstant.player.getSignedPlayerInfoAsync(contextId)
+      .then(function(signedPlayerInfo) {
+        // Requesting data from backend passing the signature as an argument
+        // The backend APP can retrieve contextId from the signature
+        const signature = signedPlayerInfo.getSignature();
+        return new backendClient(BACKEND_URL).load(signature)
+      })
+      .then(function(response) {
+        // Got successful response from backend
+        if (response.empty) {
+          $('#data').html('(empty)');
+        } else {
+          $('#data').html(JSON.stringify(response.data));
+        }
+      }.bind(this))
+      .catch(function(error) {
+        // Got error response from backend
+        display.error(error.message);
+      }.bind(this));
+    }
+
+    function saveBackendData() {
+      const contextId = getOrCreateContextId();
+
+      // Sign data before sending to backend, so we can verify it's
+      // legitimally sent by the game
+      const dataString = JSON.stringify(DATA_TO_STORE);
+      FBInstant.player.getSignedPlayerInfoAsync(dataString)
+      .then(function(result) {
+        return new backendClient(BACKEND_URL).save(
+          contextId,
+          result.getPlayerID(),
+          result.getSignature(),
+        );
+      }.bind(this))
+      .then(function(response) {
+        if (response.success) {
+          $('#data').html(dataString);
+          display.success('Data saved to backend!');
+        } else {
+          display.error('Data not saved to backend ' + JSON.stringify(response));
+        }
+      }.bind(this))
+      .catch(function(error) {
+        display.error(error.message);
+      }.bind(this));
+    }
+
+    function getOrCreateContextId() {
+      if (FBInstant.context.getType() == 'SOLO') {
+        return FBInstant.player.getID() + '_SOLO';
+      }
+      return FBInstant.context.getID();
+    }
+  </script>
+
+  <header>
+    <h1>Instant Games Demos</h1>
+    <h2>Server Communication</h2>
+  </header>
+
+  <section>
+    <h3>Data Stored in Backend</h3>
+    <pre id="data" class="output">(Empty)</pre>
+
+    <p>Press the button below to save data in your backend service.</p>
+    <input type="button"
+      onclick="saveBackendData();"
+      value="Save Backend Data"/>
+  </section>
+
+  <section>
+    <p id="display-message" class="output"></p>
+    <p id="display-success" class="success"></p>
+    <p id="display-error" class="error"></p>
+  </section>
+</body>
+</html>

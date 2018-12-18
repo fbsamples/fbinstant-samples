@@ -1,0 +1,155 @@
+<!--
+  Copyright (c) 2017-present, Facebook, Inc.
+  All rights reserved.
+
+  This source code is licensed under the license found in the
+  LICENSE file in the root directory of this source tree.
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="full-screen" content="yes"/>
+  <meta name="screen-orientation" content="portrait"/>
+  <meta name="viewport" content="user-scalable=no"/>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+</head>
+
+<body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://connect.facebook.net/en_US/fbinstant.6.2.js"></script>
+  <script src="js/display.js"></script>
+  <script type="text/javascript">
+    let display = window.Display;
+
+    window.onload = function() {
+      $('#context-section, #send-section').hide();
+
+      FBInstant.initializeAsync()
+      .then(FBInstant.startGameAsync)
+      .then(onStart);
+    }
+
+    function onStart() {
+      $('#context-section').show();
+      updateContextInfo();
+    }
+
+    // Prompts the user to pick a context
+    function chooseContext() {
+      FBInstant.context.chooseAsync().then(function() {
+        updateContextInfo();
+      });
+    }
+
+    function updateContextInfo() {
+      $('#context-id').html(FBInstant.context.getID());
+      $('#context-type').html(FBInstant.context.getType());
+
+      if (FBInstant.context.getType() === 'SOLO') {
+        display.error('Cannot send a message into a SOLO context. Try choosing another context');
+      } else {
+        display.clear();
+      }
+
+      $('#send-section').show();
+    }
+
+    function sendMessage() {
+      let player = FBInstant.player.getName();
+      let payload = {
+        action: 'CUSTOM',
+        cta: 'Say Congrats!',
+        text: {
+          default: player + ' is learning how to build Instant Games!',
+          localizations: {
+            en_US: player + ' is learning how to build Instant Games!',
+            es_LA: '\u00A1' + player + 'est\u00E1 aprendiendo a desarrollar Instant Games!',
+            pt_BR: player + 'est\u00E1 aprendendo a desenvolver Instant Games!'
+          }
+        },
+        template: 'play_turn',
+        data: { myCustomData: '42' },
+        strategy: 'IMMEDIATE',
+        notification: 'NO_PUSH'
+      };
+
+      toDataURL(
+        './img/update-image.png',
+        function(dataUrl) {
+          payload.image = dataUrl;
+          // This will post a custom update.
+          // If the game is played in a messenger chat thread,
+          // this will post a message into the thread with the specified image and text message.
+          // When others launch the game from this message,
+          // those game sessions will be able to access the specified blob
+          // of data through FBInstant.getEntryPointData()
+          FBInstant.updateAsync(payload).then(function() {
+            display.success('Message was posted!');
+          }).catch(function(error) {
+            display.error('Message was not posted: ' + error.message);
+          });
+        }
+      );
+    }
+
+    function toDataURL(src, callback) {
+      let img = new Image();
+      img.crossOrigin = 'Anonymous';
+      img.onload = function() {
+        let canvas = document.createElement('CANVAS');
+        canvas.height = 533;
+        canvas.width = 960;
+        canvas.getContext('2d').drawImage(this, 0, 0, 960, 533);
+        callback(canvas.toDataURL());
+      };
+      img.src = src;
+    }
+  </script>
+
+  <header>
+    <h1>Instant Games Demos</h1>
+    <h2>Sending Messages</h2>
+  </header>
+
+  <section id="context-section">
+    <h3>Context</h3>
+
+    <p>
+      Press the <b>Choose Context</b> to initiate a prompt for the user to
+      select a conversation.
+    </p>
+
+    <input type="button"
+      onclick="chooseContext();"
+      value="Choose Context"/>
+  </section>
+
+  <section id="send-section">
+    <table>
+      <tr>
+        <th>Context ID</th>
+        <td id="context-id">...</td>
+      </tr>
+      <tr>
+        <th>Context Type</th>
+        <td id="context-type">...</td>
+      </tr>
+    </table>
+
+    <p>Press the <b>Send Message</b> button to send an update to this context.</p>
+
+    <input type="button"
+      onclick="sendMessage();"
+      value="Send Message"/>
+  </section>
+
+  <section>
+    <p id="display-message" class="output"></p>
+    <p id="display-success" class="success"></p>
+    <p id="display-error" class="error"></p>
+  </section>
+</body>
+</html>

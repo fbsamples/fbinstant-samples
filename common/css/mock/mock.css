@@ -1,0 +1,40 @@
+/**
+ * Copyright (c) 2017-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+ .mockDialog {
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 20px;
+  background-color: #fff;
+  color:#000;
+  font-family: 'Lucida Grande';
+  position: absolute;
+  left: 30%;
+  top: 45%;
+  float:left;
+  border: 2px solid #3b5998;
+  box-shadow: 5px 5px 2px #888888;
+  border-radius: 10px;
+}
+
+.mockDialog h3 {
+  background-color: #3b5998;
+  color:#fff;
+  width:100%;
+  font-family: 'Lucida Grande';
+}
+
+.mockDialog p {
+  color:#000;
+  font-family: 'Lucida Grande';
+}
+
+.mockDialog input {
+  background-color: #3b5998;
+  color: #fff;
+}
