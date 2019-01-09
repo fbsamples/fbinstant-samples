@@ -1,6 +1,7 @@
 # Instant Games Examples
 
 This repository contains a collection of examples that show how to use the Facebook Instant Games SDK (FBInstant).
+There is also an excellent page here (https://www.facebook.com/fbgaminghome/developers/get-started) that can help you get started with the Facebook Instant Games.
 
 ## Pre-requisites
 
