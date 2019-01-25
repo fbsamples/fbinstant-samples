@@ -48,7 +48,7 @@
     function preloadInterstitial() {
       display.message('Preloading Interstitial');
       $('#btn-interstitial').hide();
-      let id = $('#interstitial-placement').value;
+      let id = $('#interstitial-placement').val();
       FBInstant.getInterstitialAdAsync(id)
       .then(function(interstitial) {
         // Load the Ad asynchronously
@@ -67,7 +67,7 @@
     function preloadRewarded() {
       display.message('Preloading Rewarded Video');
       $('#btn-rewarded').hide();
-      let id = $('#rewarded-placement').value;
+      let id = $('#rewarded-placement').val();
       FBInstant.getRewardedVideoAsync(id)
       .then(function(rewarded) {
         // Load the Ad asynchronously
