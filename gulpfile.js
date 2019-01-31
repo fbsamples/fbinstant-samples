@@ -17,7 +17,7 @@ const TASKS_FOLDER = 'tasks';
 const config = require('./config.json');
 const commandLineOptions = {
   string: ['project', 'zip'],
-  default: {project: 'hello_world', 'zip': uuid() + '.zip'},
+  default: {project: 'hello-world', 'zip': uuid() + '.zip'},
   alias: {'project': 'p', 'zip': 'z'}
 };
 var providedArguments = minimist(process.argv.slice(2), commandLineOptions);
