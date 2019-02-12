@@ -5,6 +5,7 @@
       "play_turn": {
         "example": "Edgar played their move"
       }
-    }
+    },
+  	"navigation_menu_version": "NAV_FLOATING",
   }
 }
