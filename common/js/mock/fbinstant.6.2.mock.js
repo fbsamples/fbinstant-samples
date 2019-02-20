@@ -372,8 +372,8 @@ var FBInstant = {
             1,
             {
               name: 'Connected Player 2',
-              photo: './img/mock/friend2.png', i
-              d: 44
+              photo: './img/mock/friend2.png', 
+              id: 44
             },
             null
           ),
