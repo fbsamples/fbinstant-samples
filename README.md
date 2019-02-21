@@ -43,7 +43,9 @@ Client-side examples are contained in the **`examples/`** folder:
 
 In order to run these examples you will need to use one of these tasks:
 * **`run-mock`**: Runs on localhost against a mocked version of the SDK
+* **`mock`**: It is the same as **`run-mock`**. Runs on localhost against a mocked version of the SDK
 * **`run-dist`**: Runs on localhost against the production SDK
+* **`dist`**: It is the same as **`run-dist`**. Runs on localhost against the production SDK
 * **`upload`**: Package and upload your game in order to test on mobile
 
 Below are some examples of how to execute these tasks:
