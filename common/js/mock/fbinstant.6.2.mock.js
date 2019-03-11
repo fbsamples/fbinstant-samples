@@ -70,17 +70,17 @@ var FBInstant = {
             {
               getID: function () { return 42; },
               getName: function () { return 'Friend 1'; },
-              getPhoto: function () { './img/mock/friend1.png'; }
+              getPhoto: function () { return './img/mock/friend1.png'; }
             },
             {
               getID: function () { return 43; },
               getName: function () { return 'Friend 2'; },
-              getPhoto: function () { './img/mock/friend2.png'; }
+              getPhoto: function () { return './img/mock/friend2.png'; }
             },
             {
               getID: function () { return 44; },
               getName: function () { return 'Friend 3'; },
-              getPhoto: function () { './img/mock/friend3.png'; }
+              getPhoto: function () { return './img/mock/friend3.png'; }
             }
           ];
         } else {
@@ -161,17 +161,17 @@ var FBInstant = {
             {
               getID: function () { return 42; },
               getName: function () { return 'Friend 1'; },
-              getPhoto: function () { './img/mock/friend1.png'; }
+              getPhoto: function () { return './img/mock/friend1.png'; }
             },
             {
               getID: function () { return 43; },
               getName: function () { return 'Friend 2'; },
-              getPhoto: function () { './img/mock/friend2.png'; }
+              getPhoto: function () { return './img/mock/friend2.png'; }
             },
             {
               getID: function () { return 44; },
               getName: function () { return 'Friend 3'; },
-              getPhoto: function () { './img/mock/friend3.png'; }
+              getPhoto: function () { return './img/mock/friend3.png'; }
             }
           ];
         } else {
@@ -372,7 +372,7 @@ var FBInstant = {
             1,
             {
               name: 'Connected Player 2',
-              photo: './img/mock/friend2.png', 
+              photo: './img/mock/friend2.png',
               id: 44
             },
             null
