@@ -23,7 +23,7 @@ var FBInstant = {
       return FBInstant.__utils.returnUserData('./img/mock/profile.png');
     },
     getID: function () {
-      return FBInstant.__utils.returnUserData(123456789);
+      return FBInstant.__utils.returnUserData('123456789');
     },
     getDataAsync: function (keys) {
       FBInstant.__utils.log('player.getDataAsync');
@@ -68,17 +68,17 @@ var FBInstant = {
         if (initialized) {
           players = [
             {
-              getID: function () { return 42; },
+              getID: function () { return '42'; },
               getName: function () { return 'Friend 1'; },
               getPhoto: function () { return './img/mock/friend1.png'; }
             },
             {
-              getID: function () { return 43; },
+              getID: function () { return '43'; },
               getName: function () { return 'Friend 2'; },
               getPhoto: function () { return './img/mock/friend2.png'; }
             },
             {
-              getID: function () { return 44; },
+              getID: function () { return '44'; },
               getName: function () { return 'Friend 3'; },
               getPhoto: function () { return './img/mock/friend3.png'; }
             }
@@ -159,17 +159,17 @@ var FBInstant = {
         if (initialized) {
           players = [
             {
-              getID: function () { return 42; },
+              getID: function () { return '42'; },
               getName: function () { return 'Friend 1'; },
               getPhoto: function () { return './img/mock/friend1.png'; }
             },
             {
-              getID: function () { return 43; },
+              getID: function () { return '43'; },
               getName: function () { return 'Friend 2'; },
               getPhoto: function () { return './img/mock/friend2.png'; }
             },
             {
-              getID: function () { return 44; },
+              getID: function () { return '44'; },
               getName: function () { return 'Friend 3'; },
               getPhoto: function () { return './img/mock/friend3.png'; }
             }
