@@ -23,7 +23,7 @@ const commandLineOptions = {
 var providedArguments = minimist(process.argv.slice(2), commandLineOptions);
 
 function importAllTasks () {
-  const taskNames = fs.readdirSync(TASKS_FOLDER).map(f => path.parse(f).name);
+  const taskNames = ["clean", "common", "make", "replace-sdk", "archive", "run-dist", "run-mock", "upload"];
   taskNames.forEach(taskName =>
     require('./' + TASKS_FOLDER + '/' + taskName)(gulp, config, providedArguments)
   );

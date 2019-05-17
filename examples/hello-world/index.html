@@ -19,7 +19,7 @@
 
 <body>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://connect.facebook.net/en_US/fbinstant.6.2.js"></script>
+  <script src="https://www.facebook.com/assets.php/en_US/fbinstant.latest.js"></script>
   <script type="text/javascript">
 
     const assets = [
@@ -53,7 +53,11 @@
       $('#player-name').html(FBInstant.player.getName());
       $('#player-id').html(FBInstant.player.getID());
       $('#context-type').html(FBInstant.context.getType());
-
+      try{
+        $('#entrypointdata').html(JSON.stringify(FBInstant.getEntryPointData()));
+      }catch(e){
+        console.log(e);
+      }
       $('#info-section').show();
     }
   </script>
@@ -80,6 +84,10 @@
       <tr>
         <th>Context Type</th>
         <td id="context-type"></td>
+      </tr>
+      <tr>
+        <th>Entrypoint Data</th>
+        <td id="entrypointdata"></td>
       </tr>
     </table>
   </section>

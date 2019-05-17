@@ -12,3 +12,4 @@ archives/
 config.json
 .env
 yarn-error.log
+yarn.lock
