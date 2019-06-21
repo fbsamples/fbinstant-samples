@@ -29,10 +29,11 @@ module.exports = function(gulp, config, commandLineArguments) {
       'make',
       'replace-sdk',
       'archive',
-      function() {
+      function(done) {
         upload(config.archivesFolder, commandLineArguments.zip)
           .then(function() {
             console.log('Success');
+            done();
             return Promise.resolve("Success");
           })
           .catch(function(error) {
@@ -81,8 +82,7 @@ module.exports = function(gulp, config, commandLineArguments) {
               console.log('Bundle uploaded via the graph API');
               console.log("Don't forget you need to publish the build");
               console.log('Opening developer dashboard...');
-              open(openUrl);
-              resolve();
+              return open(openUrl).then(resolve);
             } else {
               reject(new Error('Unexpected API response: ' + response.body));
             }
